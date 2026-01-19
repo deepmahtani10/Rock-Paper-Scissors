@@ -1,0 +1,284 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>
+            Rock Paper Scissors
+        </title>
+        <style>
+            body
+            {
+                background-color : rgb(25, 25, 25);
+                color: white;
+                font-family: Arial;
+            }
+            .title
+            {
+                font-size : 25px;
+                font-weight : bold;
+            }
+            .Rock_img
+            {
+                height : 50px;
+                cursor: pointer;
+            }
+            .Paper_img
+            {
+                height : 50px;
+                cursor: pointer;
+            }
+            .Scissors_img
+            {
+                height : 50px;
+                cursor: pointer;
+            }
+            .Rock_butt
+            {
+                background-color: transparent;  /**makes the button tansparent**/
+                border : 3px solid white;
+                width : 120px;
+                height: 120px;
+                border-radius : 60px;
+                margin-right: 10px;
+            }
+            .Paper_butt
+            {
+                background-color: transparent;  /**makes the button tansparent**/
+                border : 3px solid white;
+                width : 120px;
+                height: 120px;
+                border-radius : 60px;
+                margin-right: 10px;
+            }
+            .Scissors_butt
+            {
+                background-color: transparent;  /**makes the button tansparent**/
+                border : 3px solid white;
+                width : 120px;
+                height: 120px;
+                border-radius : 60px;
+                margin-right: 10px;
+            }
+            .Reset_butt
+            {
+                background-color: white;
+                border: none;
+                font-size: 15px;
+                padding: 8px 15px;
+                cursor: pointer;
+            }
+            .js_result
+            {
+                font-size: 25px;
+                font-weight: bold;
+                margin-top:50px;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <p class = "title">
+            Rock Paper Scissors
+        </p>
+        
+        <p>
+            <button title = "Picks Rock", class = "Rock_butt"
+            onclick="
+                choice = `Rock`;
+                CompMove();
+                if(comp_choice_str === 'Rock')
+                {
+                    result = `Tie.`;
+                    score.ties++;
+                    UpdateScore();
+                }
+                else if (comp_choice_str === 'Paper')
+                {
+                    result = 'You lose.';
+                    score.losses++;
+                    UpdateScore();
+                }
+                else
+                {
+                    result = `You win.`;
+                    score.wins++;
+                    UpdateScore();
+                }
+                //alert(`You Picked Rock, Computer picked ${comp_choice_str} ${result}\n Current score: ${score.wins}, You lost ${score.losses} times, You tied ${score.ties} times.`);
+            ">    
+            <img src = "images/rock-emoji.png", class ="Rock_img"></button> <!-- this feature of finding images is called filepaths-->
+
+            <button title = "Picks Paper", class = "Paper_butt"
+            onclick ="
+                choice = `Paper`;
+                CompMove();
+                if(comp_choice_str === 'Rock')
+                {
+                    result = `You Win.`;
+                    score.wins++;
+                    UpdateScore();
+                }
+                else if (comp_choice_str === 'Paper')
+                {
+                    result = 'Tie.';
+                    score.ties++;
+                    UpdateScore();
+                }
+                else
+                {
+                    result = `You Lose.`;
+                    score.losses++;
+                    UpdateScore();
+                }
+                //alert(`You Picked Paper, Computer picked ${comp_choice_str} ${result}\n Current score: ${score.wins}, You lost ${score.losses} times, You tied ${score.ties} times.`);
+            ">            
+            <img src = "images/paper-emoji.png", class = "Paper_img"></button>
+            <button tilte = "Picks Scissors", class = "Scissors_butt"
+            onclick="
+                choice = `Scissors`;
+                CompMove();
+                if(comp_choice_str === 'Rock')
+                {
+                    result = `You lose.`;
+                    score.losses++;
+                    UpdateScore();
+                }
+                else if (comp_choice_str === 'Paper')
+                {
+                    result = 'You Win.';
+                    score.wins++;
+                    UpdateScore();
+                }
+                else
+                {
+                    result = `Tie.`;
+                    score.ties++;
+                    UpdateScore();
+                }
+                //alert(`You Picked Scissors, Computer picked ${comp_choice_str} ${result}\n Current score: ${score.wins}, You lost ${score.losses} times, You tied ${score.ties} times.`);
+            ">
+            <img src = "images/scissors-emoji.png", class = "Scissors_img"></button>
+        </p>
+
+        <p class = "js_result"></p>
+        <p class= "js_moves">
+            
+        </p>
+        <p class = "js_score"></p>
+        <button title = "Resests the Score", class = "Reset_butt"
+            onclick ="
+                score.wins = 0;
+                score.losses = 0;
+                score.ties = 0;
+                //localStorage.removeItem(`score`);   //just using this statement here however will not let you play again as the score object itself shall be deleted, thus once you reset the score the game itself cannot function, This issue can be overcome by giving score a default value when it is NULL i.e.: (deleted)
+                UpdateScore();
+            ">
+                Reset Score
+            </button>
+
+        <script>
+            let played = false;
+            //this will be our first use of psuedo-random values.
+            let comp_choice = 0;
+            let comp_choice_str =``;
+            let result = ``;
+            let choice = ``;
+            let score = JSON.parse(localStorage.getItem('score'))   ||  {wins : 0,
+                                                                        losses :  0,
+                                                                        ties: 0};
+            
+            //Keeping this innerHTML stuff here because it needs to be initalised on first startup
+            //document.querySelector(`.js_moves`)
+                //.innerHTML = `You Picked ${choice} Computer picked ${comp_choice_str}`
+
+            document.querySelector(`.js_score`)
+                .innerHTML = `Current score: ${score.wins}, You lost ${score.losses} times, You tied ${score.ties} times.`;
+
+
+            if (score === null)  //can replace with (!score) as for null, this is to check if the object itself has been deleted so we reinstantiate it.
+            //The difference between undefined and null is that null is when we intentionally want something undefined see MoreObjects.html for examples
+            {
+                //give a default value which means we may use the default operator by the .getItem for score
+                score =
+                {
+                    wins: 0,
+                    losses:  0,
+                    ties: 0
+                }
+            }
+
+            localStorage.setItem('score', JSON.stringify(score));  //using localstorage here to ensure data retetion after refresh. JSON.stringify() is used because .setItem and .getItem in localstorage is in JSON format, and JSON stringify works on objects and attributes
+
+            function CompMove() 
+            {
+                if (comp_choice === 0)
+                {
+                    comp_choice = Math.floor(Math.random() * (4 - 1) + 1);
+                }
+
+                //The above if executes anyway this way we do not preroll and obtain junk values.
+                if (comp_choice === 1)
+                {
+                    comp_choice_str = `Rock`;
+                }    
+                else if(comp_choice === 2)
+                {
+                    comp_choice_str = `Paper`;
+                }
+                else
+                {
+                    comp_choice_str = `Scissors`;
+                }
+                played = true;
+                if (played === true)
+                {
+                    comp_choice = 0;
+                    played = false;
+                }
+
+                return "Good AF";   //can return a calculation, a variable or another void function that results in a value (latter only if it is assigned to a variable in C++ but here it will be output on the console)
+            }
+
+            function UpdateScore()
+            {
+                if (score !=null)
+                {
+                    localStorage.setItem(`score`, JSON.stringify(score));
+                    document.querySelector(`.js_moves`)
+                        .innerHTML = //`You Picked ${choice} Computer picked ${comp_choice_str}`
+                                    `You
+                                    <img src = "images/${choice}-emoji.png"
+                                    class ="Rock_img">
+                                    <img src = "images/${comp_choice_str}-emoji.png"
+                                    class = "Scissors_img">
+                                    Computer`
+                    document.querySelector(`.js_score`)
+                        .innerHTML = `Current score: ${score.wins}, You lost ${score.losses} times, You tied ${score.ties} times.`;
+                }
+                else if (comp_choice === 0)
+                {
+                    localStorage.removeItem(`score`);
+                    document.querySelector(`.js_moves`)
+                        .innerHTML = //`You Picked ${choice} Computer picked ${comp_choice_str}`; You
+                                    `You
+                                    <img src = "images/${choice}-emoji.png"
+                                    class ="Rock_img">
+                                    <img src = "images/${comp_choice_str}-emoji.png"
+                                    class = "Scissors_img">
+                                    Computer`
+                    document.querySelector(`.js_score`)
+                        .innerHTML = `Current score: ${score.wins}, You lost ${score.losses} times, You tied ${score.ties} times.`;
+                }   
+            }
+
+            //The idea about local storage is after we update the score we save it in localStorage using the method .setItem
+            //local storage only supports strings therefore we store the JS code that contains the updating of the strings by converting it into a string using JSON.stringify()
+            //Then upon placing the score into local storage by stringifying the object to create a JSON style object, upon loading the page we load the score we saved into local storage using localStorage.getItem
+            //Given that the item was saved as a string we must employ JSON.parse to turn it back into a JS readable code
+
+            //However, by doing this the Reset score button's functionality must be extended to include the means to wipe the localStorage values, or it will never truly reset.
+            //This is done by something called localStroage.removeItem(`score`);
+        </script>
+
+    </body>
+</html>
